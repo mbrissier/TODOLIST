@@ -22,6 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name="com.example.todolist.Detail_main"
+            android:label="@string/title_activity_detail" >
+        </activity>
+        <activity
+            android:name="com.example.todolist.Setting_main"
+            android:label="@string/title_activity_setting_main" >
+        </activity>
+        
+        <activity
+            android:name="com.example.todolist.GetSetting_main"
+            android:label="@string/title_activity_get_setting_main" >
+        </activity>
     </application>
 
 </manifest>

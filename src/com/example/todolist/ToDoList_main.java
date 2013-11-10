@@ -88,7 +88,7 @@ public class ToDoList_main extends Activity {
 	
 	private void startSettingsActivity() {
 		
-		Intent intent = new Intent(this, SettingsActivity_main.class);
+		Intent intent = new Intent(this, Setting_main.class);
 		startActivityForResult(intent, SETTINGS_REQUEST_CODE);
 		}
 	
@@ -117,7 +117,7 @@ public class ToDoList_main extends Activity {
 				// RESULT_OK konnte von SettingsActivity erfolgreich zurueckgegeben werden oder nicht
 				
 				if (resultCode == RESULT_OK) {
-					String resultsetting = data.getStringExtra(SettingsActivity_main.RESULT_KEY);
+					String resultsetting = data.getStringExtra(Setting_main.RESULT_KEY);
 				} else {
 					Toast.makeText(ToDoList_main.this,"Could not change settings!",Toast.LENGTH_LONG).show();
 				}
