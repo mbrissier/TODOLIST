@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,21 +19,29 @@ public class ToDoList_main extends Activity {
 	
 	public static final String DATA_TITEL = "titel";
 	public static final String DATA_COMMENT = "beschreibung";
+	public static final String DATA_SPINNER = "spinner";
+	
+	//Wird beim start einer Subactivity mitgegeben, um Antworten interpretieren zu koennen
 	public static final int REQUEST_CODE_DETAIL_MAIN = 30;
 	public static final int ADD_REQUEST_CODE = 10;
 	public static final int SETTINGS_REQUEST_CODE = 20;
 	
+	//Hier werden die titel und beschreibungen gespeichert
+	static ArrayList<String> values = new ArrayList<String>();
+	static ArrayList<String> comment = new ArrayList<String>();
+	static ArrayList<Integer> spinnerposition = new ArrayList<Integer>();
 	
-	ArrayList<String> values = new ArrayList<String>();
-	ArrayList<String> comment = new ArrayList<String>();
+	//Um beim start der activity dem benutzer ein beispiel zu zeigen
+	String beispiel_titel = "Neuer Eintrag";
+	String beispiel_beschreibung ="";
+	int beispiel_spinner = 0;
 	
-	String beispiel_titel = "Zum Mond fahren";
-	String beispiel_beschreibung ="Mondmobil benutzen";
-	
-	
-	
+	// Speichern die positionen der titel-, beschreibungs- und spinnerwerte
+	int spinnerPosition;
 	int positionString;
-	int commentString;
+	int commentPostionString;
+	
+	//ListView und Adapter
 	private ListView todoListView;
 	private ArrayAdapter<String> arrayAdapter;
 	
@@ -44,60 +51,56 @@ public class ToDoList_main extends Activity {
 		setContentView(R.layout.activity_to_do_list_main);
 		
 		
-		
+		// List View und Adapter Initialisierung
 		todoListView = (ListView) findViewById(R.id.listView_todoList);
 		arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
 		todoListView.setAdapter(arrayAdapter);
 		todoListView.setOnItemClickListener(todoListViewListener);
+		
+		// die Beispiele werden hinzugefuegt
 		values.add(beispiel_titel);
 		comment.add(beispiel_beschreibung);
+		spinnerposition.add(beispiel_spinner);
 		
 				
 	}
 		
+		/**
+		 * Wenn ein Item in der ListView ausgewaehlt wird
+		 */
 		OnItemClickListener todoListViewListener = new OnItemClickListener() {
 		  @Override
 		  public void onItemClick(AdapterView<?> parent, View view,
 		    int position, long id) {
 		    
+			// Positionen von titel und beschreibung 
 			String s =values.get(position);
 			positionString = position;
 			
 			String c = comment.get(position);
-			commentString = position;
+			commentPostionString = position;
+			
+			int a = spinnerposition.get(position);
+			spinnerPosition = position;
 			
 			
+			// Detail_main wird mit den Daten des Items aufgerufen			
 		    Intent intent = new Intent (ToDoList_main.this, Detail_main.class);
 		    intent.putExtra(DATA_TITEL , s);
 		    intent.putExtra(DATA_COMMENT , c);
+		    intent.putExtra(DATA_SPINNER, a );
 		    startActivityForResult(intent, REQUEST_CODE_DETAIL_MAIN);
 		   }
 		};
 		
 
-//	@Override
-//    protected void onStart() {
-//     super.onStart();
-//     Intent intent = getIntent();
-//		
-//		String delete = intent.getExtras().getString("delete");
-//		
-//		if (delete.equals("delete")) {
-//			
-//			values.remove(positionString);
-//			comment.remove(commentString);
-//			
-//			todoListView = (ListView) findViewById(R.id.listView_todoList);
-//			arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
-//			
-//		}
-//		
-//    }
 	
+		
 	
-	
-
-	@Override
+	/**
+	 * Menu wird aufgebaut
+	 */
+	@Override	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 	    MenuInflater inflater = getMenuInflater();
@@ -106,7 +109,9 @@ public class ToDoList_main extends Activity {
 		}
 	
 	
-	
+	/**
+	 * Wenn ein Menu-Item ausgewaehlt wird
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	
@@ -116,9 +121,9 @@ public class ToDoList_main extends Activity {
 	    	
 	    	// Start der Detail_main mit Rueckgabewert: Strings fuer task item
 	    	startDetailActivity();
-	    	
-	    		    	    	    	
+	    	    		    	    	    	
 	    return true;
+	    
 	    
 	    case R.id.setting:
 	    	// Start der SettingsActivity mit Rueckgabewert: dimens fuer Schriftgroesse
@@ -126,8 +131,22 @@ public class ToDoList_main extends Activity {
 	    	
 	    return true;
 	    
+	    case R.id.delete_last:
+	    	if (!values.isEmpty()) {
+	    		values.remove(positionString);
+	    		comment.remove(commentPostionString);
+	    		spinnerposition.remove(spinnerPosition);
+	    		
+	    		arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
+				todoListView.setAdapter(arrayAdapter);
+	    	}
+	    		
+	    	
+	    	
+	    return true;
 	        
 	    default:
+	    	
 	    return super.onOptionsItemSelected(item);
 			}
 		}
@@ -135,6 +154,7 @@ public class ToDoList_main extends Activity {
 	private void startDetailActivity() {
 
         Intent intent = new Intent(this, Detail_main.class);
+        //Start der Detail_main
         startActivityForResult(intent, ADD_REQUEST_CODE);
         
         }
@@ -142,6 +162,7 @@ public class ToDoList_main extends Activity {
 	private void startSettingsActivity() {
 		
 		Intent intent = new Intent(this, Setting_main.class);
+		//Start der Setting_main
 		startActivityForResult(intent, SETTINGS_REQUEST_CODE);
 		}
 	
@@ -151,10 +172,7 @@ public class ToDoList_main extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		
-		String logging = Integer.toString(requestCode);
-		Log.wtf("requestcode", logging);
-		Toast.makeText(ToDoList_main.this,logging,Toast.LENGTH_LONG).show();
-		
+			
 		switch(requestCode) {
 		
 			//Wenn die Detail_main ihre Eingabe fuer das Erstellen einer Task zurueck gibt
@@ -165,6 +183,7 @@ public class ToDoList_main extends Activity {
 				if (resultCode == RESULT_OK) {
 					values.add(data.getExtras().getString("edit_titel"));
 					comment.add(data.getExtras().getString("edit_beschreibung"));
+					spinnerposition.add(data.getExtras().getInt("spinner"));
 					
 					arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
 					todoListView.setAdapter(arrayAdapter);
@@ -188,14 +207,16 @@ public class ToDoList_main extends Activity {
 				
 			 break;
 			
-			//Wenn in Detail_main etwas veraendert wurde
+			//Wenn in Detail_main etwas veraendert wurde, ein Item in ListView wurde ausgewaehlt und hier wird 
+			 //die Antwort von Detail_main verarbeitet.
 			case REQUEST_CODE_DETAIL_MAIN:
 				
 				if(resultCode == RESULT_OK) {
 								
 				
 					values.set(positionString, (data.getExtras().getString("edit_titel")));
-					comment.set(commentString, (data.getExtras().getString("edit_beschreibung")));
+					comment.set(commentPostionString, (data.getExtras().getString("edit_beschreibung")));
+					spinnerposition.set(spinnerPosition, (data.getExtras().getInt("spinner")));
 					
 					arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
 					todoListView.setAdapter(arrayAdapter);

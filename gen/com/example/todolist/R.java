@@ -32,6 +32,7 @@ public final class R {
         public static final int add=0x7f0a000b;
         public static final int button_delete=0x7f0a0007;
         public static final int button_save=0x7f0a0006;
+        public static final int delete_last=0x7f0a000d;
         public static final int editText_beschreibung=0x7f0a0004;
         public static final int editText_titel=0x7f0a0002;
         public static final int item=0x7f0a0009;
@@ -60,6 +61,7 @@ public final class R {
         public static final int app_name=0x7f060000;
         public static final int beschreibung=0x7f060007;
         public static final int delete=0x7f06000a;
+        public static final int delete_last=0x7f06000d;
         public static final int einstellungen=0x7f06000b;
         public static final int prioritaet=0x7f060008;
         public static final int save=0x7f060009;
@@ -68,8 +70,8 @@ public final class R {
         public static final int task=0x7f060005;
         public static final int titel=0x7f060006;
         public static final int title_activity_detail=0x7f060002;
-        public static final int title_activity_get_setting_main=0x7f06000e;
-        public static final int title_activity_setting_main=0x7f06000d;
+        public static final int title_activity_get_setting_main=0x7f06000f;
+        public static final int title_activity_setting_main=0x7f06000e;
     }
     public static final class style {
         /** 
