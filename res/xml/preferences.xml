@@ -10,10 +10,11 @@
         <EditTextPreference
             android:key="text_size"
             android:title="@string/schriftgroesse" 
-            android:summary="Define the Welcome message to be shown"
+            android:summary="@string/schriftgroessee_aendern"
             android:dialogTitle="@string/schriftgroesse"
-            android:dialogMessage="Provide a message"    
-            android:defaultValue="Default welcome message" />
+            android:dialogMessage="@string/schriftgroessee_aendern_2"    
+            android:numeric="integer"
+            android:defaultValue="14.0" />
 
     </PreferenceCategory>
     

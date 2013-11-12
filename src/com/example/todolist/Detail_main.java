@@ -1,8 +1,11 @@
 package com.example.todolist;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -77,8 +80,26 @@ public class Detail_main extends Activity implements OnItemSelectedListener {
 			prioritySpinner.setSelection(a);
 
 		}
+		
+		loadSavedPreferences();
 
 	}
+	
+	/**
+	 * laden der text size aus shared preferences und uebergabe an titel und beschreibung editText
+	 */
+	private void loadSavedPreferences() {
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		try {
+			  float val = Float.parseFloat(sharedPreferences.getString("text_size", "14.0"));
+			  titel.setTextSize(val);
+			  beschreibung.setTextSize(val);
+			} catch (NumberFormatException e) {
+				Log.wtf("Miss Cast ", "String to Float");
+			}
+		
+		}
 
 	/**
 	 * Delete Button Mehtode
@@ -94,7 +115,7 @@ public class Detail_main extends Activity implements OnItemSelectedListener {
 	};
 
 	/**
-	 * Save Button Methode Uebergibt die Daten einem Intent und startet
+	 * Save Button Methode uebergibt die Daten einem Intent und startet
 	 * ToDOList_main, dort wird dann die Methode onActivityResult gestartet!
 	 */
 	OnClickListener saveListener = new OnClickListener() {

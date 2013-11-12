@@ -3,15 +3,22 @@ package com.example.todolist;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.*;
 
@@ -24,12 +31,13 @@ public class ToDoList_main extends Activity {
 	//Wird beim start einer Subactivity mitgegeben, um Antworten interpretieren zu koennen
 	public static final int REQUEST_CODE_DETAIL_MAIN = 30;
 	public static final int ADD_REQUEST_CODE = 10;
-	public static final int SETTINGS_REQUEST_CODE = 20;
+	private static final int DIALOG = 1;
+	
 	
 	//Hier werden die titel und beschreibungen gespeichert
-	static ArrayList<String> values = new ArrayList<String>();
-	static ArrayList<String> comment = new ArrayList<String>();
-	static ArrayList<Integer> spinnerposition = new ArrayList<Integer>();
+	ArrayList<String> values = new ArrayList<String>();
+	ArrayList<String> comment = new ArrayList<String>();
+	ArrayList<Integer> spinnerposition = new ArrayList<Integer>();
 	
 	//Um beim start der activity dem benutzer ein beispiel zu zeigen
 	String beispiel_titel = "Neuer Eintrag";
@@ -41,9 +49,14 @@ public class ToDoList_main extends Activity {
 	int positionString;
 	int commentPostionString;
 	
+	
 	//ListView und Adapter
 	private ListView todoListView;
+	private TextView todoListItem;
 	private ArrayAdapter<String> arrayAdapter;
+	private MadaArrayAdapter arrayAdaptersize;
+	private AlertDialog alert;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +66,88 @@ public class ToDoList_main extends Activity {
 		
 		// List View und Adapter Initialisierung
 		todoListView = (ListView) findViewById(R.id.listView_todoList);
+		todoListItem = (TextView) findViewById(R.id.item);
 		arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
 		todoListView.setAdapter(arrayAdapter);
 		todoListView.setOnItemClickListener(todoListViewListener);
+		todoListView.setLongClickable(true);
+		
+		todoListView.setOnItemLongClickListener(todoListViewLongListener);
 		
 		// die Beispiele werden hinzugefuegt
 		values.add(beispiel_titel);
 		comment.add(beispiel_beschreibung);
 		spinnerposition.add(beispiel_spinner);
 		
+		loadSavedPreferences();
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Aufgabe wirklich loeschen?")
+		   .setCancelable(false)
+		   .setPositiveButton("JA", new DialogInterface.OnClickListener() {
+		       public void onClick(DialogInterface dialog, int id) {
+		            deleteItem();
+		       }
+		   })
+		   .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+		       public void onClick(DialogInterface dialog, int id) {
+		            
+		       }
+		   });
+		alert = builder.create();
+		
 				
 	}
+	
+		/**
+		 * laden der text size und uebergabe an listitem
+		 */
+		private void loadSavedPreferences() {
+			SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+			
+			try {
+					String val1= sharedPreferences.getString("text_size", "");
+				  	Toast.makeText(ToDoList_main.this,"Val:"+ val1 ,Toast.LENGTH_LONG).show();
+				 
+//				float val = Float.parseFloat(sharedPreferences.getString("text_size", ""));
+//				if (val != 18) {
+//					arrayAdaptersize = new MadaArrayAdapter (ToDoList_main.this);
+//					arrayAdaptersize.getView();
+//					arrayAdaptersize.setTextSize(val, arrayAdaptersize.getTextSizeUnit());
+//					todoListView.setAdapter(arrayAdaptersize);
+//					todoListView.setOnItemClickListener(todoListViewListener);
+//				}  
+
+				} catch (NumberFormatException e) {
+					Log.wtf("Miss Cast ", "String to Float");
+				}
+			
+			}
+			
+		OnItemLongClickListener todoListViewLongListener = new OnItemLongClickListener() {
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                    int pos, long id) {
+					
+					String s =values.get(pos);
+					positionString = pos;
+					
+					String c = comment.get(pos);
+					commentPostionString = pos;
+					
+					int a = spinnerposition.get(pos);
+					spinnerPosition = pos;
+					
+					alert.show();
+                Log.v("long clicked","pos: " + pos);
+
+                return true;
+            }
+        }; 
+		
+
+			
+			
+		 
 		
 		/**
 		 * Wenn ein Item in der ListView ausgewaehlt wird
@@ -93,6 +177,20 @@ public class ToDoList_main extends Activity {
 		   }
 		};
 		
+	private void deleteItem() {
+		
+		if (!values.isEmpty()) {
+    		
+    		
+			values.remove(positionString);
+    		comment.remove(commentPostionString);
+    		spinnerposition.remove(spinnerPosition);
+    		
+    		arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
+			todoListView.setAdapter(arrayAdapter);
+    		
+    	}
+	}
 
 	
 		
@@ -121,6 +219,8 @@ public class ToDoList_main extends Activity {
 	    	
 	    	// Start der Detail_main mit Rueckgabewert: Strings fuer task item
 	    	startDetailActivity();
+	    	
+	    	
 	    	    		    	    	    	
 	    return true;
 	    
@@ -131,19 +231,8 @@ public class ToDoList_main extends Activity {
 	    	
 	    return true;
 	    
-	    case R.id.delete_last:
-	    	if (!values.isEmpty()) {
-	    		values.remove(positionString);
-	    		comment.remove(commentPostionString);
-	    		spinnerposition.remove(spinnerPosition);
-	    		
-	    		arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
-				todoListView.setAdapter(arrayAdapter);
-	    	}
-	    		
-	    	
-	    	
-	    return true;
+	   
+	 
 	        
 	    default:
 	    	
@@ -162,8 +251,8 @@ public class ToDoList_main extends Activity {
 	private void startSettingsActivity() {
 		
 		Intent intent = new Intent(this, Setting_main.class);
-		//Start der Setting_main
-		startActivityForResult(intent, SETTINGS_REQUEST_CODE);
+		//Start der Setting_main, der rueckgabe wert wird ueber die shared preferences ausgelesen
+		startActivity(intent);
 		}
 	
 	@Override
@@ -188,24 +277,13 @@ public class ToDoList_main extends Activity {
 					arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
 					todoListView.setAdapter(arrayAdapter);
 				
-				} else {
-					Toast.makeText(ToDoList_main.this,"Could not add item!",Toast.LENGTH_LONG).show();
-				}
+				} 
+				
 				
 			break;
 				
-			//Wenn die SettingsActivity_main ihre veraenderte Schriftgroesse zurueck gibt
-			case SETTINGS_REQUEST_CODE:
-				
-				// RESULT_OK konnte von SettingsActivity erfolgreich zurueckgegeben werden oder nicht
-				
-				if (resultCode == RESULT_OK) {
-					String resultsetting = data.getStringExtra(Setting_main.RESULT_KEY);
-				} else {
-					Toast.makeText(ToDoList_main.this,"Could not change settings!",Toast.LENGTH_LONG).show();
-				}
-				
-			 break;
+			
+			
 			
 			//Wenn in Detail_main etwas veraendert wurde, ein Item in ListView wurde ausgewaehlt und hier wird 
 			 //die Antwort von Detail_main verarbeitet.
@@ -221,9 +299,7 @@ public class ToDoList_main extends Activity {
 					arrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, values);
 					todoListView.setAdapter(arrayAdapter);
 				
-			} else {
-					Toast.makeText(ToDoList_main.this,"Could not edit task!",Toast.LENGTH_LONG).show();
-				}
+			} 
 				
 			break;
 			

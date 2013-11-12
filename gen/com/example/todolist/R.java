@@ -32,7 +32,6 @@ public final class R {
         public static final int add=0x7f0a000b;
         public static final int button_delete=0x7f0a0007;
         public static final int button_save=0x7f0a0006;
-        public static final int delete_last=0x7f0a000d;
         public static final int editText_beschreibung=0x7f0a0004;
         public static final int editText_titel=0x7f0a0002;
         public static final int item=0x7f0a0009;
@@ -45,15 +44,17 @@ public final class R {
     }
     public static final class layout {
         public static final int activity_detail=0x7f030000;
-        public static final int activity_setting_main=0x7f030001;
-        public static final int activity_to_do_list_main=0x7f030002;
-        public static final int listview_item=0x7f030003;
+        public static final int activity_my_preferences=0x7f030001;
+        public static final int activity_setting_main=0x7f030002;
+        public static final int activity_to_do_list_main=0x7f030003;
+        public static final int listview_item=0x7f030004;
     }
     public static final class menu {
         public static final int detail=0x7f090000;
         public static final int get_setting_main=0x7f090001;
-        public static final int setting_main=0x7f090002;
-        public static final int to_do_list_main=0x7f090003;
+        public static final int my_preferences=0x7f090002;
+        public static final int setting_main=0x7f090003;
+        public static final int to_do_list_main=0x7f090004;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;
@@ -63,15 +64,19 @@ public final class R {
         public static final int delete=0x7f06000a;
         public static final int delete_last=0x7f06000d;
         public static final int einstellungen=0x7f06000b;
+        public static final int hello_world=0x7f060013;
         public static final int prioritaet=0x7f060008;
         public static final int save=0x7f060009;
         public static final int schriftgroesse=0x7f06000c;
+        public static final int schriftgroessee_aendern=0x7f06000e;
+        public static final int schriftgroessee_aendern_2=0x7f06000f;
         public static final int setting=0x7f060004;
         public static final int task=0x7f060005;
         public static final int titel=0x7f060006;
         public static final int title_activity_detail=0x7f060002;
-        public static final int title_activity_get_setting_main=0x7f06000f;
-        public static final int title_activity_setting_main=0x7f06000e;
+        public static final int title_activity_get_setting_main=0x7f060011;
+        public static final int title_activity_my_preferences=0x7f060012;
+        public static final int title_activity_setting_main=0x7f060010;
     }
     public static final class style {
         /** 
@@ -103,5 +108,6 @@ public final class R {
     }
     public static final class xml {
         public static final int preferences=0x7f040000;
+        public static final int sharedpreferences=0x7f040001;
     }
 }
