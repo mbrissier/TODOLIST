@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -23,8 +24,7 @@ public class Detail_main extends Activity implements OnItemSelectedListener {
 	public static final String RESULT_KEY = "adding";
 	public static final String RESULT_KEY_EDIT_TITEL = "edit_titel";
 	public static final String RESULT_KEY_EDIT_BESCHREIBUNG = "edit_beschreibung";
-	
-	
+	public static final String RESULT_KEY_DELETE = "delete_flag";
 
 	private Spinner prioritySpinner;
 	private EditText titel;
@@ -35,7 +35,6 @@ public class Detail_main extends Activity implements OnItemSelectedListener {
 	// Die Auswahlmoeglichkeiten, definiert in strings.xml, im Spinner werden in
 	// priority gespeichert
 	String[] priority;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,7 @@ public class Detail_main extends Activity implements OnItemSelectedListener {
 		// Loesch-Button
 		deleteButton = (Button) findViewById(R.id.button_delete);
 		deleteButton.setOnClickListener(deleteListener);
+		deleteButton.setOnLongClickListener(deleteListenerLong);
 
 		// Speicher_Button
 		saveButton = (Button) findViewById(R.id.button_save);
@@ -80,37 +80,52 @@ public class Detail_main extends Activity implements OnItemSelectedListener {
 			prioritySpinner.setSelection(a);
 
 		}
-		
+
 		loadSavedPreferences();
 
 	}
-	
+
 	/**
-	 * laden der text size aus shared preferences und uebergabe an titel und beschreibung editText
+	 * laden der text size aus shared preferences und uebergabe an titel und
+	 * beschreibung editText
 	 */
 	private void loadSavedPreferences() {
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
 		try {
-			  float val = Float.parseFloat(sharedPreferences.getString("text_size", "14.0"));
-			  titel.setTextSize(val);
-			  beschreibung.setTextSize(val);
-			} catch (NumberFormatException e) {
-				Log.wtf("Miss Cast ", "String to Float");
-			}
-		
+			float val = Float.parseFloat(sharedPreferences.getString(
+					"text_size", "14.0"));
+			titel.setTextSize(val);
+			beschreibung.setTextSize(val);
+			
+		} catch (NumberFormatException e) {
+			Log.wtf("Miss Cast ", "String to Float");
 		}
+
+	}
 
 	/**
 	 * Delete Button Mehtode
 	 */
 	OnClickListener deleteListener = new OnClickListener() {
 		public void onClick(View v) {
-			
-			
+
 			titel.setText("");
 			beschreibung.setText("");
-			
+
+		}
+	};
+
+	OnLongClickListener deleteListenerLong = new OnLongClickListener() {
+
+		@Override
+		public boolean onLongClick(View v) {
+			Intent deletedata = new Intent();
+			deletedata.putExtra(RESULT_KEY_DELETE, true);
+			setResult(RESULT_OK, deletedata);
+			finish();
+			return false;
 		}
 	};
 
@@ -120,17 +135,26 @@ public class Detail_main extends Activity implements OnItemSelectedListener {
 	 */
 	OnClickListener saveListener = new OnClickListener() {
 		public void onClick(View v) {
-			
-			if (((titel.getText().toString().isEmpty()) && (beschreibung.getText().toString()).isEmpty()) ) { 
-				Toast.makeText(Detail_main.this,"Nothing to save!",Toast.LENGTH_LONG).show();
+
+			if (((titel.getText().toString().isEmpty()) && (beschreibung
+					.getText().toString()).isEmpty())) {
+				Toast.makeText(Detail_main.this, "Nothing to save!",
+						Toast.LENGTH_LONG).show();
+			}
+
+			else if ((titel.getText().toString().isEmpty())) {
+				Toast.makeText(Detail_main.this, "Please insert Titel!",
+						Toast.LENGTH_LONG).show();
+
 			} else {
-			Intent data = new Intent();
-			data.putExtra(RESULT_KEY_EDIT_TITEL, titel.getText().toString());
-			data.putExtra(RESULT_KEY_EDIT_BESCHREIBUNG, beschreibung.getText()
-					.toString());
-			data.putExtra("spinner", prioritySpinner.getSelectedItemPosition());
-			setResult(RESULT_OK, data);
-			finish();
+				Intent data = new Intent();
+				data.putExtra(RESULT_KEY_EDIT_TITEL, titel.getText().toString());
+				data.putExtra(RESULT_KEY_EDIT_BESCHREIBUNG, beschreibung
+						.getText().toString());
+				data.putExtra("spinner",
+						prioritySpinner.getSelectedItemPosition());
+				setResult(RESULT_OK, data);
+				finish();
 			}
 		}
 	};

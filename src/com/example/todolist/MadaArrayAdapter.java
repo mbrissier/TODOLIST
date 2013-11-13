@@ -1,6 +1,8 @@
 package com.example.todolist;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ public class MadaArrayAdapter<T> extends ArrayAdapter<T>{
 
 	private float textSize = 16;
 	private int textSizeUnit = TypedValue.COMPLEX_UNIT_SP;
+	private Context context;
 	
 	/**
 	 * Creates an empty MadaArrayAdapter
@@ -24,6 +27,7 @@ public class MadaArrayAdapter<T> extends ArrayAdapter<T>{
 	 */
 	public MadaArrayAdapter(Context context) {
 		super(context, android.R.layout.simple_list_item_1);
+		this.context = context;
 	}
 	
 	/**
@@ -32,7 +36,9 @@ public class MadaArrayAdapter<T> extends ArrayAdapter<T>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
     	TextView txt = (TextView) super.getView(position, convertView, parent);
-    	txt.setTextSize(textSizeUnit, textSize);
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    	float val = Float.parseFloat(prefs.getString("text_size", String.valueOf(textSize)));
+    	txt.setTextSize(textSizeUnit, val );
     	return txt;
     }
     

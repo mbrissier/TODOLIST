@@ -33,7 +33,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textview_beschreibung"
         android:layout_below="@+id/textview_beschreibung"
-        android:layout_marginTop="120dp"
+        
+        
         android:text="@string/prioritaet"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -47,10 +48,7 @@
         android:layout_alignLeft="@+id/textview_beschreibung"
         android:layout_below="@+id/textview_beschreibung"
         android:ems="10"
-        android:inputType="textMultiLine" 
-        
-        
-        />
+        android:inputType="textMultiLine" />
 
     <EditText
         android:id="@+id/editText_titel"
@@ -71,7 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textview_prioritaet"
         android:layout_alignRight="@+id/textview_beschreibung"
-        android:layout_below="@+id/textview_prioritaet" />
+        android:layout_below="@+id/editText_beschreibung"
+        />
 
     <Button
         android:id="@+id/button_save"
@@ -79,7 +78,7 @@
         android:layout_height="50dp"
         android:layout_alignLeft="@+id/spinner_priority"
         android:layout_below="@+id/spinner_priority"
-        android:layout_marginTop="30dp"
+    	
         android:text="@string/save" />
 
     <Button
@@ -88,6 +87,7 @@
         android:layout_height="50dp"
         android:layout_alignLeft="@+id/button_save"
         android:layout_below="@+id/button_save"
+        
         android:text="@string/delete" />
 
 </RelativeLayout>
